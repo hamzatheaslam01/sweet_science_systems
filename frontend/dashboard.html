@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — Sweet Science Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--red:#E8372A;--red2:#ff4e3f;--dark:#0d0d0b;--dark2:#141412;--dark3:#1c1c19;--dark4:#222220;--gold:#c9a84c;--text:#e8e4dc;--muted:#7a7670;--border:rgba(255,255,255,0.07);--green:#639922;}
+body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;}
+
+/* ── NAV ─────────────────────────────────────────────────────────────────── */
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--dark2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);text-decoration:none;letter-spacing:1px;}
+.nav-logo span{color:var(--red);}
+.nav-links{display:flex;gap:6px;}
+.nav-pill{padding:7px 16px;border-radius:2px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;color:var(--muted);transition:all 0.2s;}
+.nav-pill:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.nav-pill.active{color:#fff;background:var(--red);}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.coach-badge{display:flex;align-items:center;gap:8px;}
+.coach-avatar{width:32px;height:32px;border-radius:50%;background:rgba(232,55,42,0.15);border:1px solid rgba(232,55,42,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--red);}
+.coach-name{font-size:13px;font-weight:500;}
+.btn-logout{padding:6px 14px;border-radius:2px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,0.08);background:none;color:var(--muted);cursor:pointer;font-family:'Barlow',sans-serif;transition:all 0.2s;text-decoration:none;}
+.btn-logout:hover{color:var(--red);border-color:rgba(232,55,42,0.3);}
+
+/* ── PAGE ────────────────────────────────────────────────────────────────── */
+.page{padding:40px 48px;max-width:1400px;margin:0 auto;}
+.page-tag{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:52px;color:#fff;letter-spacing:1px;line-height:1;margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:36px;}
+
+/* ── SUMMARY TILES ───────────────────────────────────────────────────────── */
+.summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:36px;}
+.tile{background:var(--dark2);border:1px solid var(--border);padding:24px 28px;position:relative;overflow:hidden;}
+.tile::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+.tile.red::before{background:var(--red);}
+.tile.green::before{background:var(--green);}
+.tile.gold::before{background:var(--gold);}
+.tile.muted::before{background:var(--muted);}
+.tile-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.tile-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:#fff;line-height:1;}
+.tile-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+
+/* ── FIGHTER GRID ─────────────────────────────────────────────────────────── */
+#roster-container{margin-top:24px;}
+.fighter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-bottom:48px;}
+.fighter-card{background:var(--dark2);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:transform 0.2s,border-color 0.2s;cursor:pointer;position:relative;}
+.fighter-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.15);}
+.card-photo{height:420px;width:100%;background:var(--dark3);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.card-photo img{width:100%;height:100%;object-fit:cover;}
+.card-photo .av-placeholder{font-family:'Bebas Neue',sans-serif;font-size:64px;opacity:0.3;}
+.card-content{padding:20px;}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.card-main-info{display:flex;flex-direction:column;gap:2px;}
+.card-name{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;letter-spacing:1px;}
+.card-class{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.card-readiness{text-align:right;}
+.card-readiness-num{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;}
+.card-readiness-lbl{font-size:9px;text-transform:uppercase;color:var(--muted);letter-spacing:1px;}
+.card-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;padding-top:16px;border-top:1px solid var(--border);}
+.card-stat-item{display:flex;flex-direction:column;gap:4px;}
+.card-stat-label{font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:1px;}
+.card-stat-val{font-size:14px;font-weight:600;color:var(--text);}
+.card-skills{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.skill-mini{display:flex;align-items:center;gap:10px;font-size:11px;}
+.skill-mini-lbl{min-width:60px;color:var(--muted);}
+.skill-mini-bar{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
+.skill-mini-fill{height:100%;border-radius:2px;}
+.card-actions{display:flex;gap:8px;border-top:1px solid var(--border);padding-top:16px;}
+.card-btn{flex:1;padding:8px;border-radius:3px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;text-align:center;text-decoration:none;transition:all 0.2s;}
+.card-btn-ghost{background:rgba(255,255,255,0.03);color:var(--muted);border:1px solid var(--border);}
+.card-btn-ghost:hover{background:rgba(255,255,255,0.06);color:var(--text);border-color:rgba(255,255,255,0.2);}
+.card-btn-red{background:rgba(232,55,42,0.1);color:var(--red);border:1px solid rgba(232,55,42,0.25);}
+.card-btn-red:hover{background:var(--red);color:#fff;}
+
+/* ── 2-COL BOTTOM ────────────────────────────────────────────────────────── */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.card{background:var(--dark2);border:1px solid var(--border);border-radius:4px;padding:24px;}
+
+/* ── GOAL ITEMS ──────────────────────────────────────────────────────────── */
+.goal-item{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);}
+.goal-item:last-child{border-bottom:none;}
+.goal-bar-wrap{flex:1;}
+.goal-name-row{display:flex;justify-content:space-between;margin-bottom:6px;}
+.goal-name{font-size:13px;color:var(--text);}
+.goal-pct{font-family:'Bebas Neue',sans-serif;font-size:18px;}
+.goal-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.goal-fill{height:100%;border-radius:2px;}
+.goal-meta{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* ── RECENT ACTIVITY ─────────────────────────────────────────────────────── */
+.activity-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.activity-item:last-child{border-bottom:none;}
+.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.act-text{font-size:13px;color:var(--text);flex:1;}
+.act-time{font-size:11px;color:var(--muted);}
+
+/* ── MODALS ───────────────────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--dark2);border:1px solid var(--border);border-radius:4px;padding:32px;width:520px;max-width:95vw;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#fff;margin-bottom:20px;letter-spacing:1px;}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.form-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.form-input{background:var(--dark3);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:9px 12px;font-size:13px;color:var(--text);font-family:'Barlow',sans-serif;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--red);}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-actions{display:flex;gap:10px;margin-top:20px;}
+.btn{padding:9px 20px;border-radius:2px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all 0.2s;}
+.btn-primary{background:var(--red);color:#fff;}
+.btn-primary:hover{background:var(--red2);}
+.btn-cancel{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1);}
+.btn-cancel:hover{color:var(--text);}
+.range-group{display:flex;flex-direction:column;gap:6px;}
+.range-top{display:flex;justify-content:space-between;}
+.range-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.range-val{font-size:13px;font-weight:600;color:#fff;}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--red);border-radius:50%;cursor:pointer;}
+
+.badge{display:inline-block;padding:3px 8px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.badge-green{background:rgba(99,153,34,0.15);color:#8bc34a;border:1px solid rgba(99,153,34,0.25);}
+.badge-gold{background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+.badge-red{background:rgba(232,55,42,0.12);color:var(--red);border:1px solid rgba(232,55,42,0.2);}
+
+/* ── TOAST ─────────────────────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:3px;font-size:13px;font-weight:600;z-index:200;transform:translateY(80px);opacity:0;transition:all 0.3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-error{background:#E8372A;color:#fff;}
+.toast-success{background:var(--green);color:#fff;}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.2);border-top-color:var(--red);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="dashboard.html" class="nav-logo">Sweet <span>Science</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html"      class="nav-pill active">Dashboard</a>
+    <a href="fighter-profile.html" class="nav-pill">Fighter Profile</a>
+    <a href="attendance.html" class="nav-pill">Attendance</a>
+    <a href="ai-coach.html"        class="nav-pill">AI Coach + Goals</a>
+    <a href="performance.html"     class="nav-pill">Performance</a>
+    <a href="report.html"          class="nav-pill">Reports</a>
+  </div>
+  <div class="nav-right">
+    <div class="coach-badge">
+      <div class="coach-avatar" id="coach-initials">--</div>
+      <span class="coach-name" id="coach-name-display">Loading…</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-tag">Coach Dashboard</div>
+  <div class="page-title" id="dashboard-title">Your Roster</div>
+  <div class="page-sub" id="dashboard-sub">Loading fighter data…</div>
+
+  <div class="summary-row">
+    <div class="tile red">
+      <div class="tile-label">Total Fighters</div>
+      <div class="tile-num" id="stat-total">—</div>
+      <div class="tile-sub">Active roster</div>
+    </div>
+    <div class="tile green">
+      <div class="tile-label">Fight-Ready</div>
+      <div class="tile-num" id="stat-ready">—</div>
+      <div class="tile-sub">Readiness ≥ 70</div>
+    </div>
+    <div class="tile gold">
+      <div class="tile-label">Avg Readiness</div>
+      <div class="tile-num" id="stat-avg">—</div>
+      <div class="tile-sub">All fighters</div>
+    </div>
+    <div class="tile muted">
+      <div class="tile-label">Goals Active</div>
+      <div class="tile-num" id="stat-goals">—</div>
+      <div class="tile-sub">Across roster</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Fighter Roster</div>
+    <button class="btn btn-primary" style="padding:7px 16px;font-size:12px;" onclick="openAddModal()">Add Fighter</button>
+  </div>
+
+  <div id="roster-container">
+    <div style="text-align:center;padding:60px;"><div class="spinner"></div></div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="card">
+      <div class="section-head">
+        <div class="section-title">Active Goals</div>
+        <a href="ai-coach.html" style="font-size:12px;color:var(--muted);text-decoration:none;">View All</a>
+      </div>
+      <div id="goals-list"></div>
+    </div>
+    <div class="card">
+      <div class="section-head">
+        <div class="section-title">Recent Activity</div>
+      </div>
+      <div id="activity-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-title">Add New Fighter</div>
+    <div id="modal-error" style="display:none;color:var(--red);margin-bottom:12px;font-size:13px;"></div>
+    <div class="form-row-2">
+      <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text" id="new-name"/></div>
+      <div class="form-group">
+        <label class="form-label">Weight Class</label>
+        <select class="form-input" id="new-class">
+          <option value="">Select…</option>
+          <option>Flyweight</option><option>Bantamweight</option><option>Featherweight</option>
+          <option>Lightweight</option><option>Welterweight</option><option>Middleweight</option>
+          <option>Light Heavyweight</option><option>Heavyweight</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-group"><label class="form-label">Weight (lbs)</label><input class="form-input" type="number" id="new-weight"/></div>
+      <div class="form-group"><label class="form-label">Sessions/Wk</label><input class="form-input" type="number" id="new-sessions"/></div>
+      <div class="form-group"><label class="form-label">Since</label><input class="form-input" type="number" id="new-since"/></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Profile Photo</label>
+      <input class="form-input" type="file" id="new-photo" accept="image/*"/>
+    </div>
+    <div class="form-row-3">
+      <div class="range-group"><div class="range-top"><span class="range-label">Cardio</span><span class="range-val" id="rv-cardio">3</span></div><input type="range" min="1" max="10" value="3" oninput="document.getElementById('rv-cardio').textContent=this.value" id="new-cardio"/></div>
+      <div class="range-group"><div class="range-top"><span class="range-label">Striking</span><span class="range-val" id="rv-striking">3</span></div><input type="range" min="1" max="10" value="3" oninput="document.getElementById('rv-striking').textContent=this.value" id="new-striking"/></div>
+      <div class="range-group"><div class="range-top"><span class="range-label">Grappling</span><span class="range-val" id="rv-grappling">3</span></div><input type="range" min="1" max="10" value="3" oninput="document.getElementById('rv-grappling').textContent=this.value" id="new-grappling"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="save-fighter-btn" onclick="saveFighter()">Add Fighter</button>
+      <button class="btn btn-cancel" onclick="closeAddModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+if (requireAuth()) {
+  const coach = getCoach();
+  let fighters = [];
+  let goals = [];
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    document.getElementById('coach-name-display').textContent = coach.name || 'Coach';
+    document.getElementById('coach-initials').textContent = initials(coach.name || 'CO');
+    document.getElementById('dashboard-title').textContent = `Welcome, ${(coach.name||'').split(' ')[0]}`;
+    
+    await Promise.all([loadFighters(), loadGoals()]);
+    loadActivity();
+  });
+
+  async function loadFighters() {
+    try {
+      fighters = await apiFetch('/fighters');
+      renderRoster();
+      updateTiles();
+    } catch(e) {
+      document.getElementById('roster-container').innerHTML = '<div style="color:var(--muted);text-align:center;">Failed to load fighters</div>';
+    }
+  }
+
+  function updateTiles() {
+    const total = fighters.length;
+    const ready = fighters.filter(f => f.readiness_score >= 70).length;
+    const avg = total ? Math.round(fighters.reduce((a,f)=>a+f.readiness_score,0)/total) : 0;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-ready').textContent = ready;
+    document.getElementById('stat-avg').textContent = avg;
+  }
+
+  function renderRoster() {
+    const container = document.getElementById('roster-container');
+    if (!fighters.length) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">No fighters yet. Add your first to begin.</div>';
+      return;
+    }
+
+    container.innerHTML = `<div class="fighter-grid">
+      ${fighters.map(f => {
+        const [bg,fc] = avatarColors(f.name);
+        const rdColor = toneForScore(f.readiness_score);
+        const discColor = toneForScore(f.discipline_score);
+        const label = f.readiness_label || 'Beginner';
+        const badgeClass = label === 'Fight-Ready' ? 'badge-green' : label === 'Developing' ? 'badge-gold' : 'badge-red';
+
+        return `
+          <div class="fighter-card" onclick="window.location.href='fighter-profile.html?id=${f.id}'">
+            <div class="card-photo" style="background:${f.photo_url?'none':bg}">
+              ${f.photo_url ? `<img src="${f.photo_url}">` : `<div class="av-placeholder" style="color:${fc}">${initials(f.name)}</div>`}
+              <div style="position:absolute;top:12px;right:12px;"><span class="badge ${badgeClass}">${label}</span></div>
+            </div>
+            <div class="card-content">
+              <div class="card-header">
+                <div class="card-main-info"><div class="card-name">${f.name}</div><div class="card-class">${f.weight_class||'Unknown'}</div></div>
+                <div class="card-readiness"><div class="card-readiness-num" style="color:${rdColor}">${f.readiness_score}</div><div class="card-readiness-lbl">Readiness</div></div>
+              </div>
+              <div class="card-stats">
+                <div class="card-stat-item"><div class="card-stat-label">Discipline</div><div class="card-stat-val" style="color:${discColor}">${f.discipline_score}%</div></div>
+                <div class="card-stat-item"><div class="card-stat-label">Weight</div><div class="card-stat-val">${f.weight_lbs || f.weight || '—'} lbs</div></div>
+              </div>
+              <div class="card-skills">
+                <div class="skill-mini"><span class="skill-mini-lbl">Cardio</span><div class="skill-mini-bar"><div class="skill-mini-fill" style="width:${f.cardio*10}%;background:var(--green);"></div></div></div>
+                <div class="skill-mini"><span class="skill-mini-lbl">Striking</span><div class="skill-mini-bar"><div class="skill-mini-fill" style="width:${f.striking*10}%;background:var(--red);"></div></div></div>
+                <div class="skill-mini"><span class="skill-mini-lbl">Grappling</span><div class="skill-mini-bar"><div class="skill-mini-fill" style="width:${f.grappling*10}%;background:var(--gold);"></div></div></div>
+              </div>
+              <div class="card-actions" onclick="event.stopPropagation()">
+                <a href="fighter-profile.html?id=${f.id}" class="card-btn card-btn-ghost">Profile</a>
+                <a href="report.html?id=${f.id}" class="card-btn card-btn-ghost">Report</a>
+                <button class="card-btn card-btn-red" onclick="deleteFighter('${f.id}','${f.name}')">Delete</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>`;
+  }
+
+  async function loadGoals() {
+    try {
+      goals = await apiFetch('/goals');
+      document.getElementById('stat-goals').textContent = goals.filter(g=>g.status!=='achieved').length;
+      const el = document.getElementById('goals-list');
+      const active = goals.filter(g=>g.status!=='achieved').slice(0,4);
+      if (!active.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;">No active goals.</div>'; return; }
+      el.innerHTML = active.map(g => `
+        <div class="goal-item">
+          <div class="goal-bar-wrap">
+            <div class="goal-name-row"><span class="goal-name">${g.description}</span><span class="goal-pct">${g.progress_pct || 0}%</span></div>
+            <div class="goal-bar"><div class="goal-fill" style="width:${g.progress_pct || 0}%;background:var(--green);"></div></div>
+            <div class="goal-meta">${g.fighter_name} · ${g.goal_type}</div>
+          </div>
+        </div>
+      `).join('');
+    } catch(e) {}
+  }
+
+  async function loadActivity() {
+    const el = document.getElementById('activity-list');
+    let items = [];
+    for (const f of fighters.slice(0,3)) {
+      try {
+        const hist = await apiFetch(`/fighters/${f.id}/history`);
+        hist.slice(0,2).forEach(h => items.push({...h, fighter_name:f.name}));
+      } catch(e) {}
+    }
+    items.sort((a,b) => new Date(b.logged_at) - new Date(a.logged_at));
+    if (!items.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;">No activity yet.</div>'; return; }
+    el.innerHTML = items.slice(0,6).map(a => `
+      <div class="activity-item">
+        <div class="act-dot" style="background:${a.note==='Profile created'?'var(--green)':'var(--red)'}"></div>
+        <div class="act-text"><strong>${a.fighter_name}</strong> — ${a.note || a.field_name}</div>
+        <div class="act-time">${new Date(a.logged_at).toLocaleDateString()}</div>
+      </div>
+    `).join('');
+  }
+
+  window.openAddModal = () => document.getElementById('add-modal').classList.add('open');
+  window.closeAddModal = () => document.getElementById('add-modal').classList.remove('open');
+
+  window.saveFighter = async () => {
+    const name = document.getElementById('new-name').value.trim();
+    if (!name) { alert('Name is required'); return; }
+    const btn = document.getElementById('save-fighter-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    
+    try {
+      const f = await apiFetch('/fighters', {
+        method: 'POST',
+        body: JSON.stringify({
+          name,
+          weight_class: document.getElementById('new-class').value,
+          weight_lbs: Number(document.getElementById('new-weight').value),
+          sessions_per_week: Number(document.getElementById('new-sessions').value),
+          training_since: Number(document.getElementById('new-since').value),
+          cardio: Number(document.getElementById('new-cardio').value),
+          striking: Number(document.getElementById('new-striking').value),
+          grappling: Number(document.getElementById('new-grappling').value)
+        })
+      });
+
+      const photo = document.getElementById('new-photo').files[0];
+      if (photo) {
+        const formData = new FormData();
+        formData.append('photo', photo);
+        await fetch(`${API_BASE}/fighters/${f.id}/photo`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getToken()}` },
+          body: formData
+        });
+      }
+
+      showToast('Fighter added!');
+      closeAddModal();
+      await loadFighters();
+    } catch(e) { alert(e.message); }
+    finally { btn.disabled = false; btn.textContent = 'Add Fighter'; }
+  };
+
+  window.deleteFighter = async (id, name) => {
+    if (!confirm(`Delete ${name}?`)) return;
+    await apiFetch(`/fighters/${id}`, { method:'DELETE' });
+    showToast('Fighter deleted');
+    await loadFighters();
+  };
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast toast-success show';
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  document.getElementById('add-modal').addEventListener('click', e => {
+    if (e.target.id === 'add-modal') closeAddModal();
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Coach + Goal Intelligence — Sweet Science Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--red:#E8372A;--dark:#0d0d0b;--dark2:#141412;--dark3:#1c1c19;--dark4:#222220;--gold:#c9a84c;--text:#e8e4dc;--muted:#7a7670;--border:rgba(255,255,255,0.07);--green:#639922;--amber:#c9a84c;}
+body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--dark2);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);text-decoration:none;letter-spacing:1px;}
+.nav-logo span{color:var(--red);}
+.nav-links{display:flex;gap:6px;}
+.nav-pill{padding:7px 16px;border-radius:2px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;color:var(--muted);transition:all 0.2s;}
+.nav-pill:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.nav-pill.active{color:#fff;background:var(--red);}
+.nav-back{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--text);}
+
+.page-wrap{display:grid;grid-template-columns:1fr 380px;gap:0;min-height:calc(100vh - 57px);}
+.left-col{padding:36px 48px;border-right:1px solid var(--border);}
+.right-col{background:var(--dark2);padding:32px 28px;display:flex;flex-direction:column;gap:24px;}
+
+.page-tag{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:52px;color:#fff;letter-spacing:1px;line-height:1;margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:32px;}
+
+/* AI CHAT BOX */
+.ai-panel{background:var(--dark3);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:24px;}
+.ai-panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.ai-dot-pulse{width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.ai-panel-title{font-size:13px;font-weight:500;color:var(--text);}
+.ai-panel-sub{font-size:11px;color:var(--muted);margin-left:auto;}
+.ai-messages{padding:20px;display:flex;flex-direction:column;gap:16px;max-height:360px;overflow-y:auto;}
+.ai-msg{display:flex;gap:12px;}
+.ai-msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.msg-avatar.ai{background:rgba(232,55,42,0.15);border:1px solid rgba(232,55,42,0.3);color:var(--red);}
+.msg-avatar.coach{background:rgba(255,255,255,0.08);color:var(--muted);}
+.msg-bubble{max-width:82%;padding:12px 14px;border-radius:3px;font-size:13px;line-height:1.6;}
+.msg-bubble.ai{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);}
+.msg-bubble.user{background:var(--red);color:#fff;}
+.msg-highlight{background:rgba(232,55,42,0.1);border-left:2px solid var(--red);padding:8px 12px;border-radius:0 3px 3px 0;margin-top:10px;font-size:12px;color:rgba(232,55,42,0.9);}
+.ai-input-row{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.ai-input{flex:1;background:var(--dark2);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:8px 12px;font-size:13px;color:var(--text);font-family:'Barlow',sans-serif;outline:none;}
+.ai-input:focus{border-color:var(--red);}
+.ai-send{background:var(--red);border:none;padding:8px 16px;border-radius:3px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;}
+
+/* GOALS */
+.goals-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.goals-title{font-size:13px;font-weight:500;color:var(--text);}
+.btn-sm{padding:6px 14px;border-radius:2px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:'Barlow',sans-serif;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:#ff4e3f;}
+.goal-card{background:var(--dark3);border:1px solid var(--border);border-radius:3px;padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden;}
+.goal-card::after{content:'';position:absolute;bottom:0;left:0;height:3px;width:100%;background:rgba(255,255,255,0.04);}
+.goal-progress-bar{position:absolute;bottom:0;left:0;height:3px;}
+.goal-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.goal-name{font-size:14px;font-weight:500;color:#fff;}
+.goal-fighter-tag{font-size:11px;color:var(--muted);margin-top:2px;}
+.goal-status{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:2px;}
+.status-on{background:rgba(99,153,34,0.12);color:#8bc34a;border:1px solid rgba(99,153,34,0.2);}
+.status-behind{background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+.status-achieved{background:rgba(99,153,34,0.2);color:#a8d45a;border:1px solid rgba(99,153,34,0.3);}
+.goal-meta{display:flex;gap:20px;font-size:12px;color:var(--muted);}
+.goal-meta strong{color:var(--text);}
+.goal-pct{font-family:'Bebas Neue',sans-serif;font-size:32px;margin-left:auto;padding-left:16px;}
+
+/* RIGHT PANEL */
+.panel-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.fighter-selector{display:flex;flex-direction:column;gap:4px;}
+.fs-btn{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:3px;cursor:pointer;transition:background 0.15s;}
+.fs-btn:hover{background:var(--dark3);}
+.fs-btn.active{background:var(--dark3);border:1px solid var(--border);}
+.fs-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.fs-name{font-size:13px;font-weight:500;color:var(--text);}
+.fs-class{font-size:11px;color:var(--muted);}
+.fs-score{margin-left:auto;font-family:'Bebas Neue',sans-serif;font-size:18px;}
+
+.strength-weakness{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.sw-card{background:var(--dark3);border:1px solid var(--border);border-radius:3px;padding:14px;}
+.sw-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+.sw-title.str{color:var(--green);}
+.sw-title.weak{color:var(--red);}
+.sw-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);margin-bottom:6px;}
+.sw-item:last-child{margin-bottom:0;}
+.sw-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.sw-dot.green{background:var(--green);}
+.sw-dot.red{background:var(--red);}
+
+.add-goal-form{background:var(--dark3);border:1px solid var(--border);border-radius:3px;padding:16px;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.form-input{background:var(--dark2);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:8px 10px;font-size:13px;color:var(--text);font-family:'Barlow',sans-serif;outline:none;width:100%;}
+.form-input:focus{border-color:var(--red);}
+select.form-input option{background:var(--dark2);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="dashboard.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </a>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-pill">Dashboard</a>
+    <a href="fighter-profile.html" class="nav-pill">Fighter Profile</a>
+    <a href="attendance.html" class="nav-pill">Attendance</a>
+
+    <a href="ai-coach.html" class="nav-pill active">AI Coach + Goals</a>
+    <a href="performance.html" class="nav-pill">Performance</a>
+    <a href="report.html" class="nav-pill">Reports</a>
+  </div>
+  <a href="dashboard.html" class="nav-logo">Sweet <span>Science</span></a>
+</nav>
+
+<div class="page-wrap">
+  <div class="left-col">
+    <div class="page-tag">Feature — AI Coach + Goal Intelligence</div>
+    <div class="page-title">Coach Assistant</div>
+    <div class="page-sub">AI-powered analysis meets structured goal tracking — Diego Martinez</div>
+
+    <div class="ai-panel">
+      <div class="ai-panel-header">
+        <div class="ai-dot-pulse"></div>
+        <div class="ai-panel-title">AI Coach Assistant</div>
+        <div class="ai-panel-sub">Powered by Claude</div>
+      </div>
+      <div class="ai-messages">
+        <div class="ai-msg">
+          <div class="msg-avatar coach">CO</div>
+          <div class="msg-bubble user">Analyze Diego Martinez and give me a training recommendation for the next 4 weeks.</div>
+        </div>
+        <div class="ai-msg">
+          <div class="msg-avatar ai">AI</div>
+          <div class="msg-bubble ai">
+            Diego's profile shows a high-ceiling striker with excellent cardio base (4/5) and elite hands (5/5). His primary gap is grappling — currently at 3/5 — which creates a significant vulnerability in any ground game scenario.<br/><br/>
+            His discipline score of 88 and 94% attendance rate indicate he's coachable and consistent. That's the foundation you build on.
+            <div class="msg-highlight">4-week recommendation: Add 2 dedicated grappling sessions weekly (focus on takedown defense and guard passing). Maintain current striking volume. Drop one conditioning session — his cardio baseline is sufficient; spend that hour on mat work instead.</div>
+          </div>
+        </div>
+        <div class="ai-msg">
+          <div class="msg-avatar coach">CO</div>
+          <div class="msg-bubble user">What's the biggest risk before his next bout?</div>
+        </div>
+        <div class="ai-msg">
+          <div class="msg-avatar ai">AI</div>
+          <div class="msg-bubble ai">
+            His weight is 2 lbs over the Welterweight limit (172 vs 170). If his opponent has any wrestling ability, taking Diego to the ground neutralizes his striking advantage and he currently lacks the grappling base to recover. Those two risks compound — a fatigued fighter cuts worse and defends takedowns worse. Address the weight first, then the mat time.
+          </div>
+        </div>
+      </div>
+      <div class="ai-input-row">
+        <input class="ai-input" type="text" placeholder="Ask the AI coach anything about Diego..."/>
+        <button class="ai-send">Send</button>
+      </div>
+    </div>
+
+    <div class="goals-section">
+      <div class="goals-header">
+        <div class="goals-title">Active Goals — Diego Martinez</div>
+        <button class="btn-sm btn-red">+ Add Goal</button>
+      </div>
+
+      <div class="goal-card">
+        <div class="goal-progress-bar" style="width:60%;background:#c9a84c;"></div>
+        <div class="goal-top">
+          <div>
+            <div class="goal-name">Grappling improvement: 2 → 4</div>
+            <div class="goal-fighter-tag">Skill goal · Due Jun 30</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="goal-pct" style="color:#c9a84c;">60%</span>
+            <span class="goal-status status-on">On-Track</span>
+          </div>
+        </div>
+        <div class="goal-meta">
+          <span>Current: <strong>3 / 10</strong></span>
+          <span>Target: <strong>4 / 10</strong></span>
+          <span>Sessions logged: <strong>18</strong></span>
+        </div>
+      </div>
+
+      <div class="goal-card">
+        <div class="goal-progress-bar" style="width:75%;background:#639922;"></div>
+        <div class="goal-top">
+          <div>
+            <div class="goal-name">Weight cut to 170 lbs</div>
+            <div class="goal-fighter-tag">Weight goal · Due May 15</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="goal-pct" style="color:#639922;">75%</span>
+            <span class="goal-status status-on">On-Track</span>
+          </div>
+        </div>
+        <div class="goal-meta">
+          <span>Current: <strong>172 lbs</strong></span>
+          <span>Target: <strong>170 lbs</strong></span>
+          <span>Remaining: <strong>2 lbs</strong></span>
+        </div>
+      </div>
+
+      <div class="goal-card">
+        <div class="goal-progress-bar" style="width:100%;background:#639922;"></div>
+        <div class="goal-top">
+          <div>
+            <div class="goal-name">Maintain 5 sessions per week</div>
+            <div class="goal-fighter-tag">Consistency goal · Ongoing</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="goal-pct" style="color:#639922;">100%</span>
+            <span class="goal-status status-achieved">Achieved</span>
+          </div>
+        </div>
+        <div class="goal-meta">
+          <span>Current avg: <strong>5.2 / week</strong></span>
+          <span>Target: <strong>5 / week</strong></span>
+          <span>Streak: <strong>8 weeks</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-col">
+    <div>
+      <div class="panel-label">Fighter Select</div>
+      <div class="fighter-selector">
+        <div class="fs-btn active">
+          <div class="fs-avatar" style="background:#3C3489;color:#AFA9EC;">DM</div>
+          <div><div class="fs-name">Diego Martinez</div><div class="fs-class">Welterweight</div></div>
+          <div class="fs-score" style="color:#639922;">82</div>
+        </div>
+        <div class="fs-btn">
+          <div class="fs-avatar" style="background:#185FA5;color:#85B7EB;">SK</div>
+          <div><div class="fs-name">Sara Kim</div><div class="fs-class">Flyweight</div></div>
+          <div class="fs-score" style="color:#639922;">71</div>
+        </div>
+        <div class="fs-btn">
+          <div class="fs-avatar" style="background:#854F0B;color:#FAC775;">TR</div>
+          <div><div class="fs-name">Tariq Rashid</div><div class="fs-class">Middleweight</div></div>
+          <div class="fs-score" style="color:#c9a84c;">55</div>
+        </div>
+        <div class="fs-btn">
+          <div class="fs-avatar" style="background:#993C1D;color:#F0997B;">JO</div>
+          <div><div class="fs-name">James O'Brien</div><div class="fs-class">Lightweight</div></div>
+          <div class="fs-score" style="color:#E8372A;">31</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-label">AI-Identified Strengths & Weaknesses</div>
+      <div class="strength-weakness">
+        <div class="sw-card">
+          <div class="sw-title str">Strengths</div>
+          <div class="sw-item"><div class="sw-dot green"></div>Elite striking</div>
+          <div class="sw-item"><div class="sw-dot green"></div>High discipline</div>
+          <div class="sw-item"><div class="sw-dot green"></div>Cardio base</div>
+          <div class="sw-item"><div class="sw-dot green"></div>Consistency</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-title weak">Weaknesses</div>
+          <div class="sw-item"><div class="sw-dot red"></div>Grappling gap</div>
+          <div class="sw-item"><div class="sw-dot red"></div>Over weight class</div>
+          <div class="sw-item"><div class="sw-dot red"></div>Ground defense</div>
+          <div class="sw-item"><div class="sw-dot red"></div>Takedown D</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-label">Add New Goal</div>
+      <div class="add-goal-form">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Fighter</label>
+            <select class="form-input"><option>Diego Martinez</option><option>Sara Kim</option><option>Tariq Rashid</option><option>James O'Brien</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Goal Type</label>
+            <select class="form-input"><option>Skill improvement</option><option>Weight goal</option><option>Consistency goal</option></select>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Current Value</label>
+            <input class="form-input" type="text" placeholder="e.g. 3"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Value</label>
+            <input class="form-input" type="text" placeholder="e.g. 5"/>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label">Due Date</label>
+          <input class="form-input" type="date"/>
+        </div>
+        <button class="btn-sm btn-red" style="width:100%;padding:9px;">Create Goal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+if (requireAuth()) {
+  const pageSub = document.querySelector('.page-sub');
+  const messageBox = document.querySelector('.ai-messages');
+  const input = document.querySelector('.ai-input');
+  const sendBtn = document.querySelector('.ai-send');
+
+  const goalsHeaderTitle = document.querySelector('.goals-title');
+  const addGoalTopBtn = document.querySelector('.goals-header .btn-red');
+  const goalsSection = document.querySelector('.goals-section');
+
+  const fighterSelector = document.querySelector('.fighter-selector');
+  const strengthsCard = document.querySelectorAll('.sw-card')[0];
+  const weaknessesCard = document.querySelectorAll('.sw-card')[1];
+
+  const addGoalForm = document.querySelector('.add-goal-form');
+  const fighterSelect = addGoalForm.querySelectorAll('select')[0];
+  const typeSelect = addGoalForm.querySelectorAll('select')[1];
+  const currentInput = addGoalForm.querySelectorAll('input')[0];
+  const targetInput = addGoalForm.querySelectorAll('input')[1];
+  const deadlineInput = addGoalForm.querySelectorAll('input')[2];
+  const createGoalBtn = addGoalForm.querySelector('.btn-red');
+
+  let fighters = [];
+  let activeFighter = null;
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderListBlock(title, items) {
+    if (!items || !items.length) return '';
+    return `
+      <div style="margin-top:10px;">
+        <div style="font-weight:700;color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:0.8px;">${escapeHtml(title)}</div>
+        <ul style="margin:6px 0 0 18px;padding:0;">
+          ${items.map((item) => `<li style="margin:4px 0;">${escapeHtml(item)}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  function formatAiMessage(payload) {
+    if (!payload || typeof payload !== 'object') {
+      return escapeHtml(String(payload || 'No AI summary available.')).replace(/\n/g, '<br/>');
+    }
+
+    const summary = escapeHtml(payload.summary || 'No AI summary available.').replace(/\n/g, '<br/>');
+    const strengths = Array.isArray(payload.strengths) ? payload.strengths : [];
+    const weaknesses = Array.isArray(payload.weaknesses) ? payload.weaknesses : [];
+    const recommendations = Array.isArray(payload.recommendations) ? payload.recommendations : [];
+    const plan = Array.isArray(payload.focus_next_4_weeks) ? payload.focus_next_4_weeks : [];
+    const source = String(payload.source || '').toLowerCase();
+    const sourceBadge = source
+      ? `<div style="margin-top:8px;font-size:11px;color:var(--muted);">Source: <strong style="color:${source === 'groq' ? '#8bc34a' : '#c9a84c'};text-transform:uppercase;">${escapeHtml(source)}</strong></div>`
+      : '';
+
+    if (!strengths.length && !weaknesses.length && !recommendations.length && !plan.length) {
+      return summary;
+    }
+
+    return `
+      <div>${summary}</div>
+      ${renderListBlock('Strengths', strengths)}
+      ${renderListBlock('Weaknesses', weaknesses)}
+      ${renderListBlock('Recommendations', recommendations)}
+      ${renderListBlock('4-Week Focus', plan)}
+      ${sourceBadge}
+    `;
+  }
+
+  function pushMessage(role, text, options = {}) {
+    const content = options.isHtml ? String(text || '') : escapeHtml(String(text || '')).replace(/\n/g, '<br/>');
+    const html = `
+      <div class="ai-msg ${role === 'user' ? 'user' : ''}">
+        <div class="msg-avatar ${role === 'user' ? 'coach' : 'ai'}">${role === 'user' ? 'CO' : 'AI'}</div>
+        <div class="msg-bubble ${role === 'user' ? 'user' : 'ai'}">${content}</div>
+      </div>
+    `;
+    messageBox.insertAdjacentHTML('beforeend', html);
+    messageBox.scrollTop = messageBox.scrollHeight;
+  }
+
+  function updateNavLinks() {
+    if (!activeFighter) return;
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      const href = a.getAttribute('href');
+      if (href && !href.includes('dashboard.html')) {
+        const base = href.split('?')[0];
+        a.setAttribute('href', base + '?id=' + activeFighter.id);
+      }
+    });
+  }
+  function renderFighterList() {
+    fighterSelector.innerHTML = fighters.map((fighter) => {
+      const active = activeFighter && String(activeFighter.id) === String(fighter.id);
+      const scoreColor = toneForScore(fighter.readiness_score || 0);
+      const bg = scoreColor === '#639922' ? '#1A6B45' : scoreColor === '#c9a84c' ? '#854F0B' : '#993C1D';
+      const fg = scoreColor === '#639922' ? '#7EC8A4' : scoreColor === '#c9a84c' ? '#FAC775' : '#F0997B';
+      return `
+        <div class="fs-btn ${active ? 'active' : ''}" onclick="window.__selectAIFighter('${fighter.id}')">
+          <div class="fs-avatar" style="background:${bg};color:${fg};">${initials(fighter.name)}</div>
+          <div><div class="fs-name">${fighter.name}</div><div class="fs-class">${fighter.weight_class || 'Unknown'}</div></div>
+          <div class="fs-score" style="color:${scoreColor};">${fighter.readiness_score || 0}</div>
+        </div>
+      `;
+    }).join('');
+
+    fighterSelect.innerHTML = fighters.map((fighter) => `<option value="${fighter.id}">${fighter.name}</option>`).join('');
+    if (activeFighter) {
+      fighterSelect.value = String(activeFighter.id);
+    }
+  }
+
+  function goalTypeApiValue(label) {
+    const value = String(label || '').toLowerCase();
+    if (value.includes('weight')) return 'weight';
+    if (value.includes('consistency')) return 'consistency';
+    return 'skill';
+  }
+
+  function goalTypeLabel(value) {
+    if (value === 'weight') return 'Weight goal';
+    if (value === 'consistency') return 'Consistency goal';
+    return 'Skill goal';
+  }
+
+  function renderGoals(goals) {
+    goalsHeaderTitle.textContent = `Active Goals${activeFighter ? ` - ${activeFighter.name}` : ''}`;
+    const cards = goals.length ? goals.map((goal) => {
+      const pct = goal.progress_pct || 0;
+      const color = goal.status === 'achieved' ? '#639922' : goal.status === 'on-track' ? '#639922' : '#c9a84c';
+      const statusClass = goal.status === 'achieved' ? 'status-achieved' : goal.status === 'on-track' ? 'status-on' : 'status-behind';
+      return `
+        <div class="goal-card">
+          <div class="goal-progress-bar" style="width:${pct}%;background:${color};"></div>
+          <div class="goal-top">
+            <div>
+              <div class="goal-name">${goal.description || `${goalTypeLabel(goal.goal_type || goal.type)} target`}</div>
+              <div class="goal-fighter-tag">${goalTypeLabel(goal.goal_type || goal.type)}${goal.deadline ? ` · Due ${goal.deadline}` : ''}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span class="goal-pct" style="color:${color};">${pct}%</span>
+              <span class="goal-status ${statusClass}">${goal.status || 'on-track'}</span>
+            </div>
+          </div>
+          <div class="goal-meta">
+            <span>Current: <strong>${goal.current_value}</strong></span>
+            <span>Target: <strong>${goal.target_value}</strong></span>
+          </div>
+        </div>
+      `;
+    }).join('') : '<div style="color:var(--muted);font-size:13px;">No goals yet for this fighter.</div>';
+
+    const oldCards = goalsSection.querySelectorAll('.goal-card');
+    oldCards.forEach((node) => node.remove());
+    const empty = goalsSection.querySelector('.goals-empty');
+    if (empty) empty.remove();
+    goalsSection.insertAdjacentHTML('beforeend', `<div class="goals-empty">${cards}</div>`);
+  }
+
+  function renderStrengthsWeaknesses(payload) {
+    const strengths = payload.strengths || ['Based on current profile, strengths will appear after analysis.'];
+    const weaknesses = payload.weaknesses || ['No critical weaknesses were flagged in the latest analysis.'];
+
+    strengthsCard.innerHTML = `
+      <div class="sw-title str">Strengths</div>
+      ${strengths.map((item) => `<div class="sw-item"><div class="sw-dot green"></div>${item}</div>`).join('')}
+    `;
+
+    weaknessesCard.innerHTML = `
+      <div class="sw-title weak">Weaknesses</div>
+      ${weaknesses.map((item) => `<div class="sw-item"><div class="sw-dot red"></div>${item}</div>`).join('')}
+    `;
+  }
+
+  async function runAnalysis(question) {
+    if (!activeFighter) return;
+    const promptText = String(question || '').trim();
+    if (promptText) {
+      pushMessage('user', promptText);
+    }
+    try {
+      const ai = await apiFetch('/ai/coach-feedback', {
+        method: 'POST',
+        body: JSON.stringify({ fighter_id: activeFighter.id, question: promptText }),
+      });
+      pushMessage('ai', formatAiMessage(ai), { isHtml: true });
+      renderStrengthsWeaknesses(ai);
+    } catch (error) {
+      pushMessage('ai', `Unable to generate AI response: ${error.message}`);
+    }
+  }
+
+  async function loadGoals() {
+    if (!activeFighter) return;
+    try {
+      const goals = await apiFetch(`/goals/${activeFighter.id}`);
+      renderGoals(goals);
+    } catch (error) {
+      renderGoals([]);
+    }
+  }
+
+  async function selectFighter(id) {
+    activeFighter = fighters.find((fighter) => String(fighter.id) === String(id)) || null;
+    renderFighterList();
+    if (!activeFighter) return;
+    pageSub.textContent = `AI-powered analysis meets structured goal tracking - ${activeFighter.name}`;
+    await loadGoals();
+    await runAnalysis('Give me a focused 4-week recommendation.');
+  }
+
+  window.__selectAIFighter = selectFighter;
+
+  addGoalTopBtn.addEventListener('click', () => {
+    addGoalForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  sendBtn.addEventListener('click', async () => {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    await runAnalysis(text);
+  });
+
+  input.addEventListener('keydown', async (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      sendBtn.click();
+    }
+  });
+
+  createGoalBtn.addEventListener('click', async () => {
+    const selectedFighterId = fighterSelect.value;
+    if (!selectedFighterId) return;
+
+    try {
+      await apiFetch('/goals', {
+        method: 'POST',
+        body: JSON.stringify({
+          fighter_id: selectedFighterId,
+          type: goalTypeApiValue(typeSelect.value),
+          current_value: Number(currentInput.value || 0),
+          target_value: Number(targetInput.value || 0),
+          deadline: deadlineInput.value || null,
+          description: `${typeSelect.value} goal`,
+        }),
+      });
+      currentInput.value = '';
+      targetInput.value = '';
+      deadlineInput.value = '';
+      if (activeFighter && String(activeFighter.id) === String(selectedFighterId)) {
+        await loadGoals();
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  (async function init() {
+    fighters = await apiFetch('/fighters');
+    const params = new URLSearchParams(window.location.search);
+    const urlId = params.get('id');
+    messageBox.innerHTML = '';
+    if (!fighters.length) {
+      fighterSelector.innerHTML = '<div style="color:var(--muted);font-size:13px;">No fighters found.</div>';
+      goalsHeaderTitle.textContent = 'Active Goals';
+      goalsSection.insertAdjacentHTML('beforeend', '<div class="goals-empty" style="color:var(--muted);font-size:13px;">Add a fighter first to use AI and goals.</div>');
+      return;
+    }
+    activeFighter = fighters.find(f => String(f.id) === String(urlId)) || fighters[0];
+    if (typeof updateNavLinks === "function") updateNavLinks();
+    renderFighterList();
+    await selectFighter(activeFighter.id);
+  })();
+}
+</script>
+</body>
+</html>

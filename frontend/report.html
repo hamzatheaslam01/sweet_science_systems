@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fighter Report System — Sweet Science Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,700;1,400&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--red:#E8372A;--dark:#0d0d0b;--dark2:#141412;--dark3:#1c1c19;--gold:#c9a84c;--text:#e8e4dc;--muted:#7a7670;--border:rgba(255,255,255,0.07);--green:#639922;}
+body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:var(--dark2);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);text-decoration:none;letter-spacing:1px;}
+.nav-logo span{color:var(--red);}
+.nav-links{display:flex;gap:6px;}
+.nav-pill{padding:7px 16px;border-radius:2px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;color:var(--muted);transition:all 0.2s;}
+.nav-pill:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.nav-pill.active{color:#fff;background:var(--red);}
+.nav-back{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--text);}
+
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 57px);}
+
+/* SIDEBAR */
+.sidebar{background:var(--dark2);border-right:1px solid var(--border);padding:28px 20px;display:flex;flex-direction:column;gap:20px;}
+.sidebar-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.report-list{display:flex;flex-direction:column;gap:4px;}
+.report-item{padding:10px 12px;border-radius:3px;cursor:pointer;border:1px solid transparent;transition:all 0.15s;}
+.report-item:hover{background:var(--dark3);}
+.report-item.active{background:var(--dark3);border-color:var(--border);}
+.report-date{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.report-fighter{font-size:13px;font-weight:500;color:var(--text);}
+.report-score{font-size:11px;margin-top:3px;}
+.gen-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;background:var(--red);border-radius:3px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:background 0.2s;letter-spacing:0.3px;}
+.gen-btn:hover{background:#ff4e3f;}
+.fighter-pick{display:flex;flex-direction:column;gap:4px;}
+.fp-btn{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:3px;cursor:pointer;transition:background 0.15s;}
+.fp-btn:hover{background:var(--dark3);}
+.fp-btn.active{background:var(--dark3);}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.fp-name{font-size:13px;font-weight:500;color:var(--text);}
+.fp-class{font-size:11px;color:var(--muted);}
+input[type=checkbox]{accent-color:var(--red);width:14px;height:14px;margin-right:4px;}
+
+/* MAIN REPORT VIEW */
+.report-main{padding:36px 48px;overflow-y:auto;}
+.report-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.page-tag{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:44px;color:#fff;letter-spacing:1px;line-height:1;}
+.report-actions{display:flex;gap:8px;align-items:center;}
+.btn{padding:8px 18px;border-radius:2px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Barlow',sans-serif;letter-spacing:0.5px;transition:all 0.2s;}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.12);}
+.btn-outline:hover{color:var(--text);border-color:rgba(255,255,255,0.25);}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:#ff4e3f;}
+
+/* REPORT DOCUMENT */
+.report-doc{background:var(--dark3);border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.report-doc-header{background:#1a1a18;padding:28px 36px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.report-doc-header::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--red);}
+.report-watermark{position:absolute;right:32px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(255,255,255,0.03);letter-spacing:4px;pointer-events:none;}
+.report-id{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.report-fighter-name{font-family:'Bebas Neue',sans-serif;font-size:42px;color:#fff;letter-spacing:1px;margin-bottom:4px;}
+.report-meta-row{display:flex;gap:24px;flex-wrap:wrap;}
+.report-meta{font-size:12px;color:var(--muted);display:flex;gap:5px;}
+.report-meta strong{color:var(--text);}
+
+.report-body{padding:32px 36px;}
+.report-section{margin-bottom:28px;}
+.rs-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+/* SCORE TRIO */
+.score-trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:28px;}
+.score-box{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:3px;padding:18px;text-align:center;}
+.score-box-num{font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;}
+.score-box-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* SKILL TABLE */
+.skill-table{width:100%;border-collapse:collapse;}
+.skill-table td{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.skill-table tr:last-child td{border-bottom:none;}
+.skill-table .sk-name{color:var(--muted);width:120px;}
+.skill-table .sk-bar-cell{padding:10px 20px;}
+.sk-bar-wrap{height:5px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.sk-bar-fill{height:100%;border-radius:2px;}
+.sk-num{color:#fff;font-weight:500;min-width:40px;text-align:right;}
+
+/* GOAL TABLE */
+.goal-table{width:100%;border-collapse:collapse;}
+.goal-table th{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:8px 0;text-align:left;border-bottom:1px solid var(--border);font-weight:500;}
+.goal-table td{padding:11px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.goal-table tr:last-child td{border-bottom:none;}
+.status-badge{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:2px;}
+.sb-on{background:rgba(99,153,34,0.12);color:#8bc34a;border:1px solid rgba(99,153,34,0.2);}
+.sb-behind{background:rgba(201,168,76,0.12);color:#c9a84c;border:1px solid rgba(201,168,76,0.2);}
+.sb-achieved{background:rgba(99,153,34,0.18);color:#a8d45a;border:1px solid rgba(99,153,34,0.3);}
+
+/* AI SUMMARY */
+.ai-summary-box{background:#111110;border:1px solid var(--border);border-radius:3px;padding:22px 24px;}
+.ai-summary-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.ai-indicator{width:8px;height:8px;border-radius:50%;background:var(--red);}
+.ai-summary-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:500;}
+.ai-summary-text{font-size:14px;line-height:1.8;color:rgba(232,228,220,0.85);font-style:italic;}
+.ai-summary-text strong{color:#fff;font-style:normal;}
+.ai-rec{background:rgba(232,55,42,0.08);border-left:2px solid var(--red);padding:12px 16px;margin-top:16px;border-radius:0 3px 3px 0;font-size:13px;color:rgba(232,55,42,0.85);line-height:1.6;}
+
+/* DISC INLINE */
+.disc-inline{display:flex;gap:20px;align-items:center;}
+.disc-score-big{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--green);line-height:1;}
+.disc-details{display:flex;flex-direction:column;gap:6px;}
+.disc-bar-row{display:flex;align-items:center;gap:10px;font-size:12px;}
+.disc-bar-label{color:var(--muted);min-width:100px;}
+.disc-bar-wrap{width:120px;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.disc-bar-fill{height:100%;border-radius:2px;background:var(--green);}
+
+/* REPORT FOOTER */
+.report-footer{padding:16px 36px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.01);}
+.rf-left{font-size:11px;color:var(--muted);}
+.rf-right{font-size:11px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="dashboard.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </a>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-pill">Dashboard</a>
+    <a href="fighter-profile.html" class="nav-pill">Fighter Profile</a>
+    <a href="attendance.html" class="nav-pill">Attendance</a>
+
+    <a href="ai-coach.html" class="nav-pill">AI Coach + Goals</a>
+    <a href="performance.html" class="nav-pill">Performance</a>
+    <a href="report.html" class="nav-pill active">Reports</a>
+  </div>
+  <a href="dashboard.html" class="nav-logo">Sweet <span>Science</span></a>
+</nav>
+
+<div class="layout">
+  <div class="sidebar">
+    <div>
+      <div class="sidebar-label">Generate Report</div>
+      <div class="fighter-pick">
+        <div class="fp-btn active">
+          <input type="checkbox" checked/>
+          <div class="av" style="background:#3C3489;color:#AFA9EC;">DM</div>
+          <div><div class="fp-name">Diego Martinez</div><div class="fp-class">Welterweight</div></div>
+        </div>
+        <div class="fp-btn">
+          <input type="checkbox"/>
+          <div class="av" style="background:#185FA5;color:#85B7EB;">SK</div>
+          <div><div class="fp-name">Sara Kim</div><div class="fp-class">Flyweight</div></div>
+        </div>
+        <div class="fp-btn">
+          <input type="checkbox"/>
+          <div class="av" style="background:#854F0B;color:#FAC775;">TR</div>
+          <div><div class="fp-name">Tariq Rashid</div><div class="fp-class">Middleweight</div></div>
+        </div>
+        <div class="fp-btn">
+          <input type="checkbox"/>
+          <div class="av" style="background:#993C1D;color:#F0997B;">JO</div>
+          <div><div class="fp-name">James O'Brien</div><div class="fp-class">Lightweight</div></div>
+        </div>
+      </div>
+      <div class="gen-btn" style="margin-top:14px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Generate Report
+      </div>
+    </div>
+
+    <div>
+      <div class="sidebar-label">Report History</div>
+      <div class="report-list">
+        <div class="report-item active">
+          <div class="report-date">Mar 28, 2025</div>
+          <div class="report-fighter">Diego Martinez</div>
+          <div class="report-score" style="color:#639922;">Readiness: 82 · Fight-Ready</div>
+        </div>
+        <div class="report-item">
+          <div class="report-date">Mar 15, 2025</div>
+          <div class="report-fighter">Sara Kim</div>
+          <div class="report-score" style="color:#639922;">Readiness: 71 · Fight-Ready</div>
+        </div>
+        <div class="report-item">
+          <div class="report-date">Mar 10, 2025</div>
+          <div class="report-fighter">Tariq Rashid</div>
+          <div class="report-score" style="color:#c9a84c;">Readiness: 55 · Developing</div>
+        </div>
+        <div class="report-item">
+          <div class="report-date">Feb 28, 2025</div>
+          <div class="report-fighter">James O'Brien</div>
+          <div class="report-score" style="color:#E8372A;">Readiness: 31 · Beginner</div>
+        </div>
+        <div class="report-item">
+          <div class="report-date">Feb 14, 2025</div>
+          <div class="report-fighter">Diego Martinez</div>
+          <div class="report-score" style="color:#c9a84c;">Readiness: 74 · Developing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-main">
+    <div class="report-topbar">
+      <div>
+        <div class="page-tag">Feature — Fighter Report System</div>
+        <div class="page-title">Fighter Report</div>
+      </div>
+      <div class="report-actions">
+        <button class="btn btn-outline">Share</button>
+        <button class="btn btn-outline">Export PDF</button>
+        <button class="btn btn-red" id="regen-ai-btn">Regenerate with AI</button>
+      </div>
+    </div>
+
+    <div class="report-doc">
+      <div class="report-doc-header">
+        <div class="report-watermark">SSS</div>
+        <div class="report-id">Report #0042 · Generated Mar 28, 2025</div>
+        <div class="report-fighter-name">Diego Martinez</div>
+        <div class="report-meta-row">
+          <div class="report-meta">Weight class: <strong>Welterweight (170 lbs)</strong></div>
+          <div class="report-meta">Current weight: <strong>172 lbs</strong></div>
+          <div class="report-meta">Training since: <strong>2021</strong></div>
+          <div class="report-meta">Sessions/week: <strong>5</strong></div>
+          <div class="report-meta">Coach: <strong>Coach Rivera</strong></div>
+        </div>
+      </div>
+
+      <div class="report-body">
+        <div class="score-trio">
+          <div class="score-box">
+            <div class="score-box-num" style="color:#639922;">82</div>
+            <div class="score-box-lbl">Readiness Score</div>
+          </div>
+          <div class="score-box">
+            <div class="score-box-num" style="color:#639922;">88</div>
+            <div class="score-box-lbl">Discipline Score</div>
+          </div>
+          <div class="score-box">
+            <div class="score-box-num" style="color:#fff;">4.0</div>
+            <div class="score-box-lbl">Avg Skill Level</div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <div class="rs-title">Skill Assessment</div>
+          <table class="skill-table">
+            <tr>
+              <td class="sk-name">Cardio</td>
+              <td class="sk-bar-cell"><div class="sk-bar-wrap"><div class="sk-bar-fill" style="width:80%;background:#639922;"></div></div></td>
+              <td class="sk-num">4 / 10</td>
+            </tr>
+            <tr>
+              <td class="sk-name">Striking</td>
+              <td class="sk-bar-cell"><div class="sk-bar-wrap"><div class="sk-bar-fill" style="width:100%;background:#E8372A;"></div></div></td>
+              <td class="sk-num">5 / 10</td>
+            </tr>
+            <tr>
+              <td class="sk-name">Grappling</td>
+              <td class="sk-bar-cell"><div class="sk-bar-wrap"><div class="sk-bar-fill" style="width:60%;background:#c9a84c;"></div></div></td>
+              <td class="sk-num">3 / 10</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="report-section">
+          <div class="rs-title">Goal Progress</div>
+          <table class="goal-table">
+            <thead>
+              <tr>
+                <th>Goal</th>
+                <th>Type</th>
+                <th>Progress</th>
+                <th>Due</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Grappling 2 → 4</td>
+                <td style="color:var(--muted);">Skill</td>
+                <td style="color:#c9a84c;font-weight:500;">60%</td>
+                <td style="color:var(--muted);">Jun 30</td>
+                <td><span class="status-badge sb-on">On-Track</span></td>
+              </tr>
+              <tr>
+                <td>Weight cut 175 → 170 lbs</td>
+                <td style="color:var(--muted);">Weight</td>
+                <td style="color:#639922;font-weight:500;">75%</td>
+                <td style="color:var(--muted);">May 15</td>
+                <td><span class="status-badge sb-on">On-Track</span></td>
+              </tr>
+              <tr>
+                <td>5 sessions per week</td>
+                <td style="color:var(--muted);">Consistency</td>
+                <td style="color:#639922;font-weight:500;">100%</td>
+                <td style="color:var(--muted);">Ongoing</td>
+                <td><span class="status-badge sb-achieved">Achieved</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="report-section">
+          <div class="rs-title">Discipline Analysis</div>
+          <div class="disc-inline">
+            <div class="disc-score-big">88</div>
+            <div class="disc-details">
+              <div class="disc-bar-row">
+                <span class="disc-bar-label">Sessions attended</span>
+                <div class="disc-bar-wrap"><div class="disc-bar-fill" style="width:94%;"></div></div>
+                <span style="font-size:12px;color:#fff;">94%</span>
+              </div>
+              <div class="disc-bar-row">
+                <span class="disc-bar-label">Punctuality</span>
+                <div class="disc-bar-wrap"><div class="disc-bar-fill" style="width:88%;"></div></div>
+                <span style="font-size:12px;color:#fff;">88%</span>
+              </div>
+              <div class="disc-bar-row">
+                <span class="disc-bar-label">Consistency</span>
+                <div class="disc-bar-wrap"><div class="disc-bar-fill" style="width:90%;"></div></div>
+                <span style="font-size:12px;color:#fff;">5/5 wk avg</span>
+              </div>
+            </div>
+            <div style="margin-left:20px;"><span style="background:rgba(99,153,34,0.12);color:#8bc34a;border:1px solid rgba(99,153,34,0.2);font-size:11px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:2px;text-transform:uppercase;">High</span></div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <div class="rs-title">AI-Generated Performance Summary</div>
+          <div class="ai-summary-box">
+            <div class="ai-summary-header">
+              <div class="ai-indicator"></div>
+              <div class="ai-summary-label">Generated by AI Coach · Mar 28, 2025</div>
+            </div>
+            <div class="ai-summary-text">
+              Diego Martinez continues to develop as one of the most complete strikers in the gym's current roster. His <strong>5/5 striking</strong> and <strong>4/5 cardio</strong> form a championship-caliber foundation, and his discipline score of <strong>88</strong> reflects the kind of work ethic coaches dream about. He shows up, he does the work, and his numbers prove it.<br/><br/>
+              The single area requiring focused investment is <strong>grappling (3/5)</strong>, which currently represents a tactical liability if matched against a wrestler or submission specialist. His weight of 172 lbs sits 2 lbs above the Welterweight limit — manageable with diet discipline in the weeks ahead of a bout. Both issues are correctable, and his trajectory suggests they will be.
+            </div>
+            <div class="ai-rec">Recommended next steps: 2× weekly grappling sessions with emphasis on takedown defense and guard retention. Introduce a structured weight management protocol targeting 170 lbs by May 1. Maintain current striking volume — do not sacrifice what is already elite.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-footer">
+        <div class="rf-left">Sweet Science Systems · Report #0042 · Diego Martinez</div>
+        <div class="rf-right">Generated Mar 28, 2025 · Stored in database</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+if (requireAuth()) {
+  const fighterPick = document.querySelector('.fighter-pick');
+  const generateBtn = document.querySelector('.gen-btn');
+  const reportList = document.querySelector('.report-list');
+
+  const reportId = document.querySelector('.report-id');
+  const fighterName = document.querySelector('.report-fighter-name');
+  const reportMeta = document.querySelectorAll('.report-meta strong');
+  const scoreNums = document.querySelectorAll('.score-box-num');
+  const skillBars = document.querySelectorAll('.sk-bar-fill');
+  const skillNums = document.querySelectorAll('.sk-num');
+  const goalTableBody = document.querySelector('.goal-table tbody');
+  const discScoreBig = document.querySelector('.disc-score-big');
+  const discBarFill = document.querySelectorAll('.disc-bar-fill');
+  const aiSummaryText = document.querySelector('.ai-summary-text');
+  const aiRec = document.querySelector('.ai-rec');
+  const footerLeft = document.querySelector('.rf-left');
+  const footerRight = document.querySelector('.rf-right');
+
+  let fighters = [];
+  let activeFighter = null;
+  let reports = [];
+
+  function reportStatus(readiness) {
+    if (readiness >= 70) return 'Fight-Ready';
+    if (readiness >= 40) return 'Developing';
+    return 'Beginner';
+  }
+
+  function formatDate(value) {
+    return new Date(value).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
+
+  function updateNavLinks() {
+    if (!activeFighter) return;
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      const href = a.getAttribute('href');
+      if (href && !href.includes('dashboard.html')) {
+        const base = href.split('?')[0];
+        a.setAttribute('href', base + '?id=' + activeFighter.id);
+      }
+    });
+  }
+  function renderFighterPicker() {
+    fighterPick.innerHTML = fighters.map((fighter) => {
+      const isActive = activeFighter && String(activeFighter.id) === String(fighter.id);
+      const scoreColor = toneForScore(fighter.readiness_score || 0);
+      const bg = scoreColor === '#639922' ? '#1A6B45' : scoreColor === '#c9a84c' ? '#854F0B' : '#993C1D';
+      const fg = scoreColor === '#639922' ? '#7EC8A4' : scoreColor === '#c9a84c' ? '#FAC775' : '#F0997B';
+      return `
+        <div class="fp-btn ${isActive ? 'active' : ''}" onclick="window.__pickReportFighter('${fighter.id}')">
+          <input type="checkbox" ${isActive ? 'checked' : ''} />
+          <div class="av" style="background:${bg};color:${fg};">${initials(fighter.name)}</div>
+          <div><div class="fp-name">${fighter.name}</div><div class="fp-class">${fighter.weight_class || 'Unknown'}</div></div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderReportList() {
+    reportList.innerHTML = reports.length ? reports.map((report, index) => {
+      const created = formatDate(report.created_at);
+      const readiness = activeFighter ? activeFighter.readiness_score : 0;
+      const label = reportStatus(readiness || 0);
+      return `
+        <div class="report-item ${index === 0 ? 'active' : ''}" onclick="window.__openReport('${report.id}')">
+          <div class="report-date">${created}</div>
+          <div class="report-fighter">${activeFighter ? activeFighter.name : 'Fighter'}</div>
+          <div class="report-score" style="color:${toneForScore(readiness || 0)};">Readiness: ${readiness || 0} · ${label}</div>
+        </div>
+      `;
+    }).join('') : '<div style="color:var(--muted);font-size:13px;">No saved reports for this fighter.</div>';
+  }
+
+  function renderGoalRows(goals) {
+    if (!goals || !goals.length) {
+      goalTableBody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">No goals found.</td></tr>';
+      return;
+    }
+
+    goalTableBody.innerHTML = goals.slice(0, 5).map((goal) => {
+      const status = goal.status || 'on-track';
+      const statusClass = status === 'achieved' ? 'sb-achieved' : status === 'behind' ? 'sb-behind' : 'sb-on';
+      const progress = goal.progress_pct || 0;
+      return `
+        <tr>
+          <td>${goal.description || `${goal.type} goal`}</td>
+          <td style="color:var(--muted);">${goal.type}</td>
+          <td style="color:${toneForScore(progress)};font-weight:500;">${progress}%</td>
+          <td style="color:var(--muted);">${goal.deadline || 'Ongoing'}</td>
+          <td><span class="status-badge ${statusClass}">${status}</span></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function renderFromContext(context) {
+    if (!activeFighter) return;
+
+    const reportDate = context.created_at || new Date().toISOString();
+    const readiness = context.readiness_score ?? activeFighter.readiness_score ?? 0;
+    const discipline = context.discipline_score ?? activeFighter.discipline_score ?? 0;
+    const avgSkill = ((Number(activeFighter.cardio || 0) + Number(activeFighter.striking || 0) + Number(activeFighter.grappling || 0)) / 3).toFixed(1);
+
+    reportId.textContent = `Report #${context.id || 'LIVE'} · Generated ${formatDate(reportDate)}`;
+    fighterName.textContent = activeFighter.name;
+    reportMeta[0].textContent = `${activeFighter.weight_class || 'Unknown'} (${activeFighter.weight_lbs || activeFighter.weight || 0} lbs)`;
+    reportMeta[1].textContent = `${activeFighter.weight_lbs || activeFighter.weight || 0} lbs`;
+    reportMeta[2].textContent = String(activeFighter.training_since || 'N/A');
+    reportMeta[3].textContent = String(activeFighter.sessions_per_week || activeFighter.training_frequency || 0);
+    reportMeta[4].textContent = getCoach().name || 'Coach';
+
+    scoreNums[0].textContent = readiness;
+    scoreNums[0].style.color = toneForScore(readiness);
+    scoreNums[1].textContent = discipline;
+    scoreNums[1].style.color = toneForScore(discipline);
+    scoreNums[2].textContent = avgSkill;
+
+    const skills = [activeFighter.cardio || 1, activeFighter.striking || 1, activeFighter.grappling || 1];
+    const colors = ['#639922', '#E8372A', '#c9a84c'];
+    skills.forEach((value, idx) => {
+      skillBars[idx].style.width = `${(value / 10) * 100}%`;
+      skillBars[idx].style.background = colors[idx];
+      skillNums[idx].textContent = `${value} / 10`;
+    });
+
+    discScoreBig.textContent = discipline;
+    discScoreBig.style.color = toneForScore(discipline);
+    discBarFill[0].style.width = `${activeFighter.attendance_pct || discipline}%`;
+    discBarFill[1].style.width = `${discipline}%`;
+    discBarFill[2].style.width = `${Math.min((activeFighter.sessions_per_week || activeFighter.training_frequency || 0) * 20, 100)}%`;
+
+    aiSummaryText.textContent = context.ai_summary || context.report_text || 'Generate a report to get an AI summary.';
+    aiRec.textContent = context.ai_summary
+      ? 'Recommended next steps are embedded in the generated AI summary above.'
+      : 'Generate a new report to get up-to-date recommendations.';
+
+    footerLeft.textContent = `Sweet Science Systems · Report #${context.id || 'LIVE'} · ${activeFighter.name}`;
+    footerRight.textContent = `Generated ${formatDate(reportDate)} · Stored in database`;
+  }
+
+  async function loadReportsForFighter() {
+    if (!activeFighter) return;
+    reports = await apiFetch(`/reports/${activeFighter.id}`);
+    renderReportList();
+
+    const goals = await apiFetch(`/goals/${activeFighter.id}`);
+    renderGoalRows(goals);
+
+    if (reports.length) {
+      renderFromContext(reports[0]);
+    } else {
+      renderFromContext({ report_text: 'No saved reports yet for this fighter.' });
+    }
+  }
+
+  window.__pickReportFighter = async function pickReportFighter(id) {
+    activeFighter = fighters.find((fighter) => String(fighter.id) === String(id)) || null;
+    renderFighterPicker();
+    await loadReportsForFighter();
+  };
+
+  window.__openReport = function openReport(id) {
+    const report = reports.find((entry) => String(entry.id) === String(id));
+    if (!report) return;
+    document.querySelectorAll('.report-item').forEach((item) => item.classList.remove('active'));
+    const clicked = Array.from(document.querySelectorAll('.report-item')).find((el) => el.getAttribute('onclick') === `window.__openReport(${id})`);
+    if (clicked) clicked.classList.add('active');
+    renderFromContext(report);
+  };
+
+  async function triggerGeneration() {
+    if (!activeFighter) return;
+    const regenBtn = document.getElementById('regen-ai-btn');
+    try {
+      generateBtn.style.opacity = '0.5';
+      if (regenBtn) { regenBtn.textContent = 'Generating...'; regenBtn.disabled = true; }
+      const generated = await apiFetch('/reports/generate', {
+        method: 'POST',
+        body: JSON.stringify({ fighter_id: activeFighter.id }),
+      });
+      reports.unshift(generated);
+      renderReportList();
+      renderFromContext(generated);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      generateBtn.style.opacity = '1';
+      if (regenBtn) { regenBtn.textContent = 'Regenerate with AI'; regenBtn.disabled = false; }
+    }
+  }
+  generateBtn.addEventListener('click', triggerGeneration);
+  const regenAiBtn = document.getElementById('regen-ai-btn');
+  if (regenAiBtn) regenAiBtn.addEventListener('click', triggerGeneration);
+
+  (async function init() {
+    fighters = await apiFetch('/fighters');
+    const params = new URLSearchParams(window.location.search);
+    const urlId = params.get('id');
+    if (!fighters.length) {
+      fighterPick.innerHTML = '<div style="color:var(--muted);font-size:13px;">No fighters found.</div>';
+      reportList.innerHTML = '<div style="color:var(--muted);font-size:13px;">No reports yet.</div>';
+      return;
+    }
+
+    activeFighter = fighters.find(f => String(f.id) === String(urlId)) || fighters[0];
+    if (typeof updateNavLinks === "function") updateNavLinks();
+    renderFighterPicker();
+    await loadReportsForFighter();
+  })();
+}
+</script>
+</body>
+</html>
+

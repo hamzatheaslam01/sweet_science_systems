@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sweet Science Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,700;1,400&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --red:#E8372A;--red2:#ff4e3f;--dark:#0d0d0b;--dark2:#141412;--dark3:#1c1c19;
+  --gold:#c9a84c;--text:#e8e4dc;--muted:#7a7670;--border:rgba(255,255,255,0.07);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 60px;background:rgba(13,13,11,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);letter-spacing:1px;}
+.nav-logo span{color:var(--red);}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{background:var(--red);color:#fff;padding:8px 22px;border-radius:2px;font-size:13px;font-weight:700;text-decoration:none;letter-spacing:0.5px;transition:background 0.2s;}
+.nav-cta:hover{background:var(--red2);}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding:120px 60px 80px;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0d0d0b 0%,#1a0f0e 50%,#0d0d0b 100%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:0.5;}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:700px;height:700px;background:radial-gradient(circle,rgba(232,55,42,0.15) 0%,transparent 65%);pointer-events:none;}
+.hero-glow2{position:absolute;bottom:-20%;left:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 65%);pointer-events:none;}
+.hero-content{position:relative;z-index:2;max-width:760px;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--red);}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,10vw,130px);line-height:0.9;color:#fff;margin-bottom:28px;letter-spacing:2px;}
+h1 span{color:var(--red);display:block;}
+.hero-sub{font-size:18px;color:var(--muted);line-height:1.7;max-width:520px;margin-bottom:44px;}
+.hero-actions{display:flex;gap:16px;align-items:center;}
+.btn-hero{background:var(--red);color:#fff;padding:14px 32px;border-radius:2px;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:0.5px;transition:all 0.2s;}
+.btn-hero:hover{background:var(--red2);transform:translateY(-1px);}
+.btn-ghost{color:var(--muted);font-size:14px;text-decoration:none;display:flex;align-items:center;gap:8px;transition:color 0.2s;}
+.btn-ghost:hover{color:var(--text);}
+.btn-ghost::after{content:'→';transition:transform 0.2s;}
+.btn-ghost:hover::after{transform:translateX(4px);}
+.hero-stats{position:absolute;right:60px;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;gap:2px;}
+.stat-box{background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:20px 28px;text-align:right;}
+.stat-box:first-child{border-bottom:none;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:44px;color:#fff;line-height:1;}
+.stat-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.hero-scroll{position:absolute;bottom:40px;left:60px;display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);z-index:2;}
+.scroll-line{width:40px;height:1px;background:var(--muted);}
+
+/* FEATURES STRIP */
+.strip{background:var(--red);padding:14px 60px;display:flex;gap:40px;overflow:hidden;}
+.strip-item{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#fff;opacity:0.85;white-space:nowrap;}
+.strip-dot{color:rgba(255,255,255,0.4);}
+
+/* SECTION SHARED */
+section{padding:100px 60px;}
+.section-tag{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:16px;}
+h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,5vw,68px);color:#fff;letter-spacing:1px;line-height:1;}
+h2 em{font-style:normal;color:var(--gold);}
+
+/* FEATURES */
+.features-section{background:var(--dark2);}
+.features-intro{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px;gap:40px;}
+.features-intro-right{max-width:420px;color:var(--muted);font-size:16px;line-height:1.7;}
+.features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;}
+.feature-card{background:var(--dark3);padding:40px;position:relative;overflow:hidden;transition:background 0.3s;cursor:pointer;text-decoration:none;display:block;}
+.feature-card:hover{background:#1f1f1c;}
+.feature-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--red);transition:height 0.3s;}
+.feature-card:hover::before{height:100%;}
+.feature-num{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--muted);margin-bottom:20px;}
+.feature-icon{width:44px;height:44px;background:rgba(232,55,42,0.1);border:1px solid rgba(232,55,42,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+.feature-icon svg{width:20px;height:20px;}
+.feature-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:12px;letter-spacing:0.5px;}
+.feature-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.feature-link{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--red);font-weight:600;display:flex;align-items:center;gap:8px;transition:gap 0.2s;}
+.feature-card:hover .feature-link{gap:14px;}
+
+/* HOW */
+.how-section{background:var(--dark);}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:60px;}
+.how-steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:24px;padding:28px 0;border-bottom:1px solid var(--border);position:relative;}
+.step:last-child{border-bottom:none;}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:40px;color:rgba(255,255,255,0.06);min-width:50px;line-height:1;}
+.step-body{}
+.step-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:0.3px;}
+.step-desc{font-size:14px;color:var(--muted);line-height:1.6;}
+.how-visual{background:var(--dark3);border:1px solid var(--border);border-radius:4px;padding:32px;position:relative;}
+.how-visual-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+.readiness-display{text-align:center;padding:20px 0 28px;}
+.readiness-num{font-family:'Bebas Neue',sans-serif;font-size:80px;color:var(--red);line-height:1;}
+.readiness-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.skill-rows{display:flex;flex-direction:column;gap:14px;}
+.sk-row{display:flex;flex-direction:column;gap:6px;}
+.sk-top{display:flex;justify-content:space-between;font-size:12px;}
+.sk-name{color:var(--muted);}
+.sk-val{color:#fff;font-weight:500;}
+.sk-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.sk-fill{height:100%;border-radius:2px;}
+
+/* CTA */
+.cta-section{background:var(--red);padding:80px 60px;text-align:center;}
+.cta-section h2{color:#fff;}
+.cta-section p{color:rgba(255,255,255,0.7);font-size:17px;margin:16px auto 36px;max-width:480px;line-height:1.6;}
+.btn-cta-white{background:#fff;color:var(--red);padding:14px 36px;border-radius:2px;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:0.5px;transition:all 0.2s;display:inline-block;}
+.btn-cta-white:hover{background:rgba(255,255,255,0.9);transform:translateY(-1px);}
+
+/* FOOTER */
+footer{background:var(--dark2);border-top:1px solid var(--border);padding:32px 60px;display:flex;justify-content:space-between;align-items:center;}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);}
+.footer-copy{font-size:12px;color:var(--muted);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.hero-content>*{animation:fadeUp 0.7s ease both;}
+.hero-eyebrow{animation-delay:0.1s;}
+h1{animation-delay:0.2s;}
+.hero-sub{animation-delay:0.35s;}
+.hero-actions{animation-delay:0.5s;}
+.hero-stats{animation:fadeUp 0.7s ease 0.4s both;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Sweet <span>Science</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+  </ul>
+  <div class="nav-auth" id="nav-auth-links">
+    <a href="login.html" class="btn-ghost" style="margin-right:20px; font-size:12px; font-weight:600;">Sign In</a>
+    <a href="login.html?tab=register" class="nav-cta">Register Now</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">MMA Performance Intelligence</div>
+    <h1>Train <span>Smarter.</span></h1>
+    <p class="hero-sub">The complete coaching platform for MMA gyms. Track every fighter, every session, every goal — backed by AI that actually understands the sport.</p>
+    <div class="hero-actions" id="hero-auth-actions">
+      <a href="login.html" class="btn-hero">Start Coaching</a>
+      <a href="login.html?tab=register" class="btn-ghost">Create an account</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-box">
+      <div class="stat-num">12</div>
+      <div class="stat-label">Fighters tracked</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Disciplines scored</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">AI</div>
+      <div class="stat-label">Coach insights</div>
+    </div>
+  </div>
+  <div class="hero-scroll"><span class="scroll-line"></span>Scroll</div>
+</section>
+
+<div class="strip">
+  <span class="strip-item">Fighter Profiles</span>
+  <span class="strip-dot">◆</span>
+  <span class="strip-item">AI Coach Assistant</span>
+  <span class="strip-dot">◆</span>
+  <span class="strip-item">Goal Intelligence</span>
+  <span class="strip-dot">◆</span>
+  <span class="strip-item">Performance Dashboard</span>
+  <span class="strip-dot">◆</span>
+  <span class="strip-item">Fighter Reports</span>
+  <span class="strip-dot">◆</span>
+  <span class="strip-item">Discipline Scoring</span>
+  <span class="strip-dot">◆</span>
+  <span class="strip-item">Readiness Tracking</span>
+  <span class="strip-dot">◆</span>
+</div>
+
+<section id="features" class="features-section">
+  <div class="features-intro">
+    <div>
+      <div class="section-tag">Core Features</div>
+      <h2>Built For <em>Coaches</em><br>Who Demand Results</h2>
+    </div>
+    <div class="features-intro-right">Every tool in Sweet Science Systems is designed around one question: what does your fighter need to be ready to compete?</div>
+  </div>
+  <div class="features-grid">
+    <a href="fighter-profile.html" class="feature-card">
+      <div class="feature-num">01</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="6" r="4" stroke="#E8372A" stroke-width="1.5"/><path d="M3 18c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="#E8372A" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="feature-title">Fighter Profile</div>
+      <div class="feature-desc">Complete fighter dossiers with skill ratings, weight tracking, training frequency, and full progression history — all in one place.</div>
+      <div class="feature-link">Explore feature →</div>
+    </a>
+    <a href="ai-coach.html" class="feature-card">
+      <div class="feature-num">02</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#E8372A" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#E8372A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="feature-title">AI Coach + Goal Intelligence</div>
+      <div class="feature-desc">AI-powered training recommendations fused with smart goal tracking. Know exactly where each fighter stands — and what to do about it.</div>
+      <div class="feature-link">Explore feature →</div>
+    </a>
+    <a href="performance.html" class="feature-card">
+      <div class="feature-num">03</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="12" width="3" height="6" rx="1" stroke="#E8372A" stroke-width="1.5"/><rect x="8" y="7" width="3" height="11" rx="1" stroke="#E8372A" stroke-width="1.5"/><rect x="14" y="3" width="3" height="15" rx="1" stroke="#E8372A" stroke-width="1.5"/></svg>
+      </div>
+      <div class="feature-title">Performance Dashboard</div>
+      <div class="feature-desc">Visualize skill progression over time. Track discipline scores, readiness levels, and session consistency across your entire roster.</div>
+      <div class="feature-link">Explore feature →</div>
+    </a>
+    <a href="report.html" class="feature-card">
+      <div class="feature-num">04</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="#E8372A" stroke-width="1.5"/><path d="M7 7h6M7 10h6M7 13h4" stroke="#E8372A" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="feature-title">Fighter Report System</div>
+      <div class="feature-desc">Generate comprehensive fighter reports on demand. AI-authored summaries, goal outcomes, and discipline analysis — stored and shareable.</div>
+      <div class="feature-link">Explore feature →</div>
+    </a>
+  </div>
+</section>
+
+<section id="how" class="how-section">
+  <div class="section-tag">Workflow</div>
+  <h2>Nine Steps To <em>Fight-Ready</em></h2>
+  <div class="how-grid">
+    <div class="how-steps">
+      <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Coach logs in</div><div class="step-desc">Secure JWT authentication keeps your roster data private and session-safe.</div></div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Create fighter profiles</div><div class="step-desc">Add weight, skill levels across Cardio, Striking, and Grappling, and training frequency.</div></div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Assign goals</div><div class="step-desc">Set weight-cut targets, skill improvement milestones, and session consistency goals.</div></div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-body"><div class="step-title">Log attendance & stats</div><div class="step-desc">Track sessions attended and missed. Update skills as fighters develop.</div></div></div>
+      <div class="step"><div class="step-num">05</div><div class="step-body"><div class="step-title">System calculates scores</div><div class="step-desc">Discipline, readiness, and goal progress are computed automatically in real time.</div></div></div>
+      <div class="step"><div class="step-num">06</div><div class="step-body"><div class="step-title">Request AI analysis</div><div class="step-desc">Get structured coaching insights tailored to each fighter's data and current trajectory.</div></div></div>
+    </div>
+    <div class="how-visual">
+      <div class="how-visual-title">Readiness Score — Diego Martinez</div>
+      <div class="readiness-display">
+        <div class="readiness-num">82</div>
+        <div class="readiness-label">Fight-Ready · Amateur Level</div>
+      </div>
+      <div class="skill-rows">
+        <div class="sk-row">
+          <div class="sk-top"><span class="sk-name">Cardio</span><span class="sk-val">4 / 10</span></div>
+          <div class="sk-bar"><div class="sk-fill" style="width:80%;background:#639922;"></div></div>
+        </div>
+        <div class="sk-row">
+          <div class="sk-top"><span class="sk-name">Striking</span><span class="sk-val">5 / 10</span></div>
+          <div class="sk-bar"><div class="sk-fill" style="width:100%;background:#E8372A;"></div></div>
+        </div>
+        <div class="sk-row">
+          <div class="sk-top"><span class="sk-name">Grappling</span><span class="sk-val">3 / 10</span></div>
+          <div class="sk-bar"><div class="sk-fill" style="width:60%;background:#c9a84c;"></div></div>
+        </div>
+        <div class="sk-row" style="margin-top:8px;">
+          <div class="sk-top"><span class="sk-name">Discipline Score</span><span class="sk-val" style="color:#639922;">88 / 100 — High</span></div>
+          <div class="sk-bar"><div class="sk-fill" style="width:88%;background:#639922;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="section-tag" style="color:rgba(255,255,255,0.5);">Ready?</div>
+  <h2>Your Gym. Your Fighters.<br>Your Edge.</h2>
+  <p>Stop guessing. Start tracking. Sweet Science Systems gives every coach the data they need to develop fight-ready athletes.</p>
+  <a href="fighter-profile.html" class="btn-cta-white">Get Started Now</a>
+</section>
+
+<footer>
+  <div class="footer-logo">Sweet Science Systems</div>
+  <div class="footer-copy">Academic Project — MMA Performance Platform</div>
+</footer>
+
+<script>
+  // Check auth state
+  const token = localStorage.getItem('sss_token');
+  if (token) {
+    const navAuth = document.getElementById('nav-auth-links');
+    navAuth.innerHTML = `<a href="dashboard.html" class="nav-cta">Go to Dashboard</a>`;
+    
+    const heroAuth = document.getElementById('hero-auth-actions');
+    heroAuth.innerHTML = `
+      <a href="dashboard.html" class="btn-hero">Go to Dashboard</a>
+      <a href="#features" class="btn-ghost">Explore Features</a>
+    `;
+  }
+</script>
+
+</body>
+</html>

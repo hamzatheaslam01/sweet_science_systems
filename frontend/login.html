@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login — Sweet Science Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--red:#E8372A;--red2:#ff4e3f;--dark:#0d0d0b;--dark2:#141412;--dark3:#1c1c19;--gold:#c9a84c;--text:#e8e4dc;--muted:#7a7670;--border:rgba(255,255,255,0.07);}
+body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── GRID BACKGROUND ─────────────────────────────────────────────────────── */
+.bg-wrap{position:fixed;inset:0;z-index:0;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:0.4;}
+.bg-glow{position:absolute;top:-10%;right:-5%;width:600px;height:600px;background:radial-gradient(circle,rgba(232,55,42,0.12) 0%,transparent 65%);}
+.bg-glow2{position:absolute;bottom:-10%;left:-5%;width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 65%);}
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────────── */
+.page{position:relative;z-index:1;flex:1;display:grid;grid-template-columns:1fr 480px 1fr;align-items:center;min-height:100vh;padding:60px 0;}
+.center{grid-column:2;}
+
+/* ── LOGO BAR ────────────────────────────────────────────────────────────── */
+.logo-bar{text-align:center;margin-bottom:40px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text);letter-spacing:2px;text-decoration:none;display:inline-block;}
+.logo span{color:var(--red);}
+.logo-sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* ── CARD ────────────────────────────────────────────────────────────────── */
+.auth-card{background:var(--dark2);border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.tab-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.tab{padding:16px;text-align:center;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all 0.2s;border:none;background:none;font-family:'Barlow',sans-serif;}
+.tab.active{color:#fff;background:rgba(232,55,42,0.1);border-bottom:2px solid var(--red);}
+.tab:hover:not(.active){color:var(--text);background:rgba(255,255,255,0.03);}
+
+.form-wrap{padding:32px;}
+.form-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;letter-spacing:1px;margin-bottom:4px;}
+.form-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+.form-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.form-input{background:var(--dark3);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:11px 14px;font-size:14px;color:var(--text);font-family:'Barlow',sans-serif;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--red);}
+.form-input::placeholder{color:rgba(255,255,255,0.2);}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+.btn-submit{width:100%;padding:13px;background:var(--red);color:#fff;border:none;border-radius:3px;font-size:14px;font-weight:700;letter-spacing:0.5px;cursor:pointer;font-family:'Barlow',sans-serif;transition:background 0.2s;margin-top:6px;}
+.btn-submit:hover{background:var(--red2);}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* ── ERROR / SUCCESS ─────────────────────────────────────────────────────── */
+.alert{padding:12px 14px;border-radius:3px;font-size:13px;margin-bottom:16px;display:none;}
+.alert.show{display:block;}
+.alert-error{background:rgba(232,55,42,0.1);border:1px solid rgba(232,55,42,0.25);color:#ff6b5e;}
+.alert-success{background:rgba(99,153,34,0.1);border:1px solid rgba(99,153,34,0.25);color:#8bc34a;}
+
+/* ── DIVIDER ─────────────────────────────────────────────────────────────── */
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── STATS STRIP ─────────────────────────────────────────────────────────── */
+.stats-strip{display:flex;gap:2px;margin-top:20px;}
+.stat-tile{flex:1;background:var(--dark3);border:1px solid var(--border);padding:16px;text-align:center;}
+.stat-tile-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#fff;line-height:1;}
+.stat-tile-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+/* ── SPINNER ─────────────────────────────────────────────────────────────── */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<div class="bg-wrap">
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-glow2"></div>
+</div>
+
+<div class="page">
+  <div class="center">
+    <div class="logo-bar">
+      <a href="index.html" class="logo">Sweet <span>Science</span> Systems</a>
+      <div class="logo-sub">MMA Performance Platform</div>
+    </div>
+
+    <div class="auth-card">
+      <div class="tab-row">
+        <button class="tab active" onclick="switchTab('login')">Sign In</button>
+        <button class="tab"        onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="login-form" class="form-wrap">
+        <div class="form-title">Welcome Back</div>
+        <div class="form-sub">Sign in to your coaching dashboard</div>
+        <div class="alert alert-error" id="login-error"></div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" id="login-email" placeholder="coach@gym.com" autocomplete="email"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        <button class="btn-submit" id="login-btn" onclick="handleLogin()">Sign In</button>
+        <div class="divider">or</div>
+        <button class="btn-submit" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);" onclick="switchTab('register')">Create an Account</button>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" class="form-wrap" style="display:none;">
+        <div class="form-title">Join the Platform</div>
+        <div class="form-sub">Create your coach account to get started</div>
+        <div class="alert alert-error"   id="reg-error"></div>
+        <div class="alert alert-success" id="reg-success"></div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" type="text" id="reg-name" placeholder="Coach Martinez"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gym Name</label>
+            <input class="form-input" type="text" id="reg-gym" placeholder="Iron Will MMA"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" id="reg-email" placeholder="coach@gym.com"/>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input class="form-input" type="password" id="reg-password" placeholder="Min 6 chars"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input class="form-input" type="password" id="reg-confirm" placeholder="Repeat password"/>
+          </div>
+        </div>
+        <button class="btn-submit" id="reg-btn" onclick="handleRegister()">Create Account</button>
+      </div>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat-tile"><div class="stat-tile-num">100%</div><div class="stat-tile-lbl">Data-Driven</div></div>
+      <div class="stat-tile"><div class="stat-tile-num">AI</div><div class="stat-tile-lbl">Coach Ready</div></div>
+      <div class="stat-tile"><div class="stat-tile-num">JWT</div><div class="stat-tile-lbl">Secure Auth</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api';
+
+// ── Tab switching ────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) =>
+    t.classList.toggle('active', (tab==='login')?(i===0):(i===1))
+  );
+  document.getElementById('login-form').style.display    = tab==='login'    ? '' : 'none';
+  document.getElementById('register-form').style.display = tab==='register' ? '' : 'none';
+}
+
+// ── Login ────────────────────────────────────────────────────────────────────
+async function handleLogin() {
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn      = document.getElementById('login-btn');
+  const errEl    = document.getElementById('login-error');
+  errEl.classList.remove('show');
+
+  if (!email || !password) { showError(errEl, 'Please fill in all fields.'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in…';
+
+  try {
+    const res  = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) { showError(errEl, data.error || 'Login failed'); }
+    else {
+      localStorage.setItem('sss_token', data.token);
+      localStorage.setItem('sss_coach', JSON.stringify(data.coach));
+      window.location.href = 'dashboard.html';
+    }
+  } catch (e) {
+    showError(errEl, 'Could not connect to server. Is the backend running?');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
+}
+
+// ── Register ─────────────────────────────────────────────────────────────────
+async function handleRegister() {
+  const name     = document.getElementById('reg-name').value.trim();
+  const gym      = document.getElementById('reg-gym').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const confirm  = document.getElementById('reg-confirm').value;
+  const btn      = document.getElementById('reg-btn');
+  const errEl    = document.getElementById('reg-error');
+  const sucEl    = document.getElementById('reg-success');
+  errEl.classList.remove('show'); sucEl.classList.remove('show');
+
+  if (!name || !email || !password) { showError(errEl, 'Name, email, and password are required.'); return; }
+  if (password !== confirm)          { showError(errEl, 'Passwords do not match.'); return; }
+  if (password.length < 6)           { showError(errEl, 'Password must be at least 6 characters.'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Creating account…';
+
+  try {
+    const res  = await fetch(`${API}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, gym_name: gym }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      const msg = data.errors ? data.errors.map(e=>e.msg).join('. ') : (data.error || 'Registration failed');
+      showError(errEl, msg);
+    } else {
+      localStorage.setItem('sss_token', data.token);
+      localStorage.setItem('sss_coach', JSON.stringify(data.coach));
+      sucEl.textContent = 'Account created! Redirecting to dashboard…';
+      sucEl.classList.add('show');
+      setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    }
+  } catch (e) {
+    showError(errEl, 'Could not connect to server. Is the backend running?');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
+  }
+}
+
+function showError(el, msg) { el.textContent = msg; el.classList.add('show'); }
+
+// ── Enter key support ────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const loginVisible = document.getElementById('login-form').style.display !== 'none';
+  if (loginVisible) handleLogin(); else handleRegister();
+});
+
+// ── Auto-redirect if already logged in ───────────────────────────────────────
+if (localStorage.getItem('sss_token')) window.location.href = 'dashboard.html';
+
+// ── Check query params for tab switching ─────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+if (params.get('tab') === 'register') switchTab('register');
+</script>
+</body>
+</html>
