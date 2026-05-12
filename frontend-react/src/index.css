@@ -1,0 +1,153 @@
+:root {
+  --red: #E8372A;
+  --dark: #0d0d0b;
+  --dark2: #141412;
+  --dark3: #1c1c19;
+  --dark4: #222220;
+  --gold: #c9a84c;
+  --text: #e8e4dc;
+  --muted: #7a7670;
+  --border: rgba(255,255,255,0.07);
+  --green: #639922;
+  --amber: #c9a84c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Common Typography */
+h1, h2, h3, .bebas {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+}
+
+.condensed {
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+/* Global Navigation Styles (from original project) */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background: var(--dark2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.nav-logo span {
+  color: var(--red);
+}
+
+.nav-links {
+  display: flex;
+  gap: 6px;
+}
+
+.nav-pill {
+  padding: 7px 16px;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+
+.nav-pill:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.04);
+}
+
+.nav-pill.active {
+  color: #fff;
+  background: var(--red);
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-back:hover {
+  color: var(--text);
+}
+
+/* Shared UI Components */
+.btn {
+  padding: 10px 24px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  font-family: 'Barlow', sans-serif;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-red { background: var(--red); color: #fff; }
+.btn-red:hover { background: #ff4e3f; }
+
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.btn-outline:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: #fff;
+}
+
+.page-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 8px;
+}
+
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  color: #fff;
+  letter-spacing: 2px;
+  line-height: 0.9;
+  margin-bottom: 16px;
+}

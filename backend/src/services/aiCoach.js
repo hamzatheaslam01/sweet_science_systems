@@ -299,7 +299,8 @@ async function getGroqCoachSummary(payload) {
 
     return secondPass;
   } catch (error) {
-    throw error;
+    console.error('Groq API Error, using fallback:', error.message);
+    return fallbackCoachSummary(payload);
   }
 }
 

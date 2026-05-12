@@ -1,19 +1,60 @@
+# Dependencies
 node_modules/
-.env
-.DS_Store
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production
 dist/
 build/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor/System files
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Project specific temporary scripts
+backend/add_profile*.js
+backend/delete_test*.js
+backend/find_test.js
+backend/fix*.js
+backend/frontend_cleanup.js
+backend/link_attendance.js
+backend/list_recent.js
+backend/revert_scale.js
+backend/scale_up.js
+backend/seed_attendance.js
+backend/sql/
+
+# Uploads
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
+
+# Lock files
 package-lock.json
-seed_all.js
-seed_attendance.js
-fix*.js
-add_profile*.js
-delete_test*.js
-find_test.js
-frontend_cleanup.js
-link_attendance.js
-list_recent.js
-revert_scale.js
-scale_up.js
-sql/
+yarn.lock
+pnpm-lock.yaml

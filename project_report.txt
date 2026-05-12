@@ -1,0 +1,89 @@
+SWEET SCIENCE SYSTEMS PROJECT REPORT
+
+1. Project Overview
+Sweet Science Systems is a fighter-coaching web application for tracking athletes, attendance, goals, performance metrics, and generated reports. The workspace contains a frontend folder with static HTML pages and a backend folder with a Node/Express API, MongoDB models, and service logic.
+
+2. Repository Structure
+- frontend/: browser-facing pages for login, dashboard, fighter profile, attendance, AI coach, performance, and reports.
+- backend/: Express backend, MongoDB connection, middleware, models, routes, and business logic.
+- backend/sql/schema.sql: legacy SQL schema file kept in the repo.
+- implementation_plan.md: migration and implementation notes.
+
+3. Frontend Pages
+The frontend contains the following main pages:
+- index.html: landing page entry point.
+- login.html: authentication screen.
+- dashboard.html: main coach dashboard.
+- fighter-profile.html: fighter detail and editing interface.
+- attendance.html: attendance tracking interface.
+- ai-coach.html: AI coaching and goal management page.
+- performance.html: performance metrics page.
+- report.html: report generation and history page.
+
+The frontend is built as static HTML with in-page JavaScript, so it can be served directly by the backend.
+
+4. Backend Architecture
+The backend is an Express application with these main entry points:
+- src/server.js: starts the server after connecting to MongoDB.
+- src/app.js: registers middleware, routes, health check, and static file serving.
+- src/config/db.js: MongoDB connection helper.
+- src/config/env.js: environment validation and configuration.
+- src/middleware/auth.js: authentication guard for protected routes.
+
+5. Data Models
+The backend uses Mongoose models for core application data:
+- User: coach accounts with name, email, password hash, gym name, and created timestamp.
+- Fighter: fighter profiles with coach ownership, weight, weight class, skill ratings, training frequency, and timestamps.
+- Goal: fighter goals with type, description, target and current values, deadline, and coach/fighter references.
+- Attendance: training attendance records with session date, attended state, status, note, and unique fighter/date constraint.
+- Report: saved generated reports with text content and AI source metadata.
+- FighterHistory: audit trail entries for fighter profile changes.
+
+6. Route Coverage
+The backend exposes API routes for the main workflows:
+- /api/auth: login and user authentication.
+- /api/fighters: create, update, delete, and fetch fighter records.
+- /api/goals: create and manage fighter goals.
+- /api/attendance: record and read session attendance.
+- /api/reports: generate reports and fetch saved report history.
+- /api/ai: AI-assisted coaching and summary generation.
+
+7. Service Layer
+The service layer contains the app’s core scoring and report logic:
+- fighterMetrics.js: computes attendance stats and derived fighter readiness data.
+- scoring.js: computes readiness, discipline, and goal progress labels/scores.
+- reportBuilder.js: formats a fighter report into human-readable text.
+- aiCoach.js: produces AI coaching summaries.
+
+8. Seed Data
+The repository includes a seed script at backend/src/seed.js that initializes a demo coach user and realistic fighter profiles. The seeded fighter set includes names such as Khabib Nurmagomedov, Conor McGregor, Israel Adesanya, Amanda Nunes, Jon Jones, Max Holloway, Charles Oliveira, Valentina Shevchenko, Alexander Volkanovski, and Kamaru Usman.
+
+The seed script also populates sample goals, attendance records, and fighter history data so the app has content immediately after setup.
+
+9. Report Workflow
+The report workflow is built around the reports API and the report builder service. When a report is generated, the backend:
+- verifies fighter ownership,
+- computes readiness and discipline metrics,
+- gathers the fighter’s goals,
+- generates an AI summary,
+- builds the final report text,
+- stores the report in MongoDB,
+- returns the saved report data to the client.
+
+10. Current Setup
+The backend currently targets MongoDB through Mongoose and expects environment configuration for JWT and MongoDB connection details. The application serves the frontend from the backend process and exposes a health endpoint at /api/health.
+
+11. How To Run
+Typical backend startup flow:
+- cd backend
+- npm install
+- npm run dev
+
+Then open the app in a browser through the local server.
+
+12. Notes
+- The frontend is static and intentionally simple to serve from the same backend.
+- The codebase is organized around coach-owned fighter data and reporting.
+- The report and scoring logic are centralized in service modules to keep the route handlers small.
+
+End of report.
