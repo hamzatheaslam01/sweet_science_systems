@@ -26,7 +26,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/ai', aiRoutes);
 
 // Serve existing frontend pages from /frontend
-const frontendPath = path.join(__dirname, '..', '..', 'frontend');
+const frontendPath = path.join(__dirname, '..', '..', 'frontend-react', 'dist');
 const uploadsPath = path.join(__dirname, '..', '..', 'public', 'uploads');
 app.use(express.static(frontendPath));
 app.use('/uploads', express.static(uploadsPath));
